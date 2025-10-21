@@ -1,7 +1,10 @@
 export const env = {
   NODE_ENV: process.env.NODE_ENV || 'production',
   PORT: Number(process.env.PORT || 8080),
+  // Primary single origin (backward compatible)
   CLIENT_ORIGIN: process.env.CLIENT_ORIGIN,
+  // Optional comma-separated list of allowed origins for CORS (e.g., http://localhost:3000,http://localhost:3001)
+  CLIENT_ORIGINS: process.env.CLIENT_ORIGINS,
   MONGODB_URI: process.env.MONGODB_URI,
   JWT_SECRET: process.env.JWT_SECRET,
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '15m',

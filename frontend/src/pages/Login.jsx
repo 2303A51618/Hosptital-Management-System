@@ -5,6 +5,8 @@ import { EmailIcon, LockIcon } from '@chakra-ui/icons';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
+const MotionBox = motion(Box);  // ✅ Moved outside component
+
 export default function Login() {
   const { login } = useAuth();
   const nav = useNavigate();
@@ -12,6 +14,7 @@ export default function Login() {
   const [password, setPassword] = useState('password');
   const [err, setErr] = useState('');
   const toast = useToast();
+
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -19,13 +22,17 @@ export default function Login() {
       nav('/');
     } catch (e) {
       setErr(e.response?.data?.message || 'Login failed');
-      toast({ title: 'Login failed', description: e.response?.data?.message || 'Please check your credentials', status: 'error' });
+      toast({
+        title: 'Login failed',
+        description: e.response?.data?.message || 'Please check your credentials',
+        status: 'error',
+      });
     }
   };
-  const MotionBox = motion(Box);
+
   return (
     <Box minH="100vh" position="relative" overflow="hidden" bgGradient="linear(to-br, teal.50, blue.50)">
-      {/* Animated background blobs */}
+      {/* Background Blobs */}
       <MotionBox
         position="absolute"
         top="-10%"
@@ -51,7 +58,7 @@ export default function Login() {
         filter="blur(40px)"
       />
 
-      {/* Centered glass card */}
+      {/* Login Card */}
       <MotionBox
         maxW="sm"
         mx="auto"
@@ -77,19 +84,20 @@ export default function Login() {
               <FormLabel>Email</FormLabel>
               <InputGroup>
                 <InputLeftElement pointerEvents="none"><EmailIcon color="gray.400" /></InputLeftElement>
-                <Input placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} autoFocus />
+                <Input placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
               </InputGroup>
             </FormControl>
             <FormControl>
               <FormLabel>Password</FormLabel>
               <InputGroup>
                 <InputLeftElement pointerEvents="none"><LockIcon color="gray.400" /></InputLeftElement>
-                <Input placeholder="••••••••" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <Input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
               </InputGroup>
             </FormControl>
             {err && <Box color="red.500" w="100%">{err}</Box>}
-            <Button colorScheme="teal" type="submit" w="100%" size="md" _hover={{ transform: 'translateY(-1px)', boxShadow: 'lg' }} transition="all 0.2s">Sign in</Button>
-            <Text fontSize="sm" color="gray.600">Use admin@example.com / password</Text>
+            <Button colorScheme="teal" type="submit" w="100%" size="md" _hover={{ transform: 'translateY(-1px)', boxShadow: 'lg' }} transition="all 0.2s">
+              Sign in
+            </Button>
           </VStack>
         </form>
       </MotionBox>

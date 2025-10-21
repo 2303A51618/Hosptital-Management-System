@@ -37,11 +37,22 @@ app.set('trust proxy', 1);
 app.use(helmet());
 app.use(compression());
 
-const corsOptions = {
-  origin: env.CLIENT_ORIGIN,
+// Allow multiple origins in dev/production via CLIENT_ORIGINS (comma-separated) or single CLIENT_ORIGIN
+const allowedOrigins = (env.CLIENT_ORIGINS || env.CLIENT_ORIGIN || '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow non-browser requests or same-origin
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.length === 0) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error(`Not allowed by CORS: ${origin}`));
+  },
   credentials: true,
-};
-app.use(cors(corsOptions));
+}));
 app.use(cookieParser());
 // Stripe webhook needs raw body; mount webhook route separately before json parser
 app.use('/api/payments/stripe/webhook', express.raw({ type: '*/*' }));
@@ -79,7 +90,7 @@ app.use(notFound);
 app.use(errorHandler);
 
 const server = http.createServer(app);
-initSocket(server, { cors: corsOptions });
+initSocket(server, { cors: { origin: allowedOrigins.length ? allowedOrigins : true, credentials: true } });
 
 server.listen(env.PORT, () => {
   console.log(`API running on port ${env.PORT}`);
