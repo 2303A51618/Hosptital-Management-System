@@ -89,7 +89,7 @@ Hospitalsystem/
 
 1. **Navigate to backend folder**:
    ```powershell
-   cd "c:\Users\PC\Documents\web projects\Hospitalsystem\backend"
+   cd "c:\Users\PC\Hospitalsystem\backend"
    ```
 
 2. **Install dependencies**:
@@ -107,9 +107,9 @@ Hospitalsystem/
      NODE_ENV=production
      PORT=8080
      CLIENT_ORIGIN=https://your-frontend.vercel.app
-     MONGODB_URI=mongodb+srv://<user>:<pass>@<cluster>.mongodb.net/<db>?retryWrites=true&w=majority
-     JWT_SECRET=your_super_secret_key
-     JWT_REFRESH_SECRET=your_refresh_secret
+     MONGODB_URI=mongodb+ ...
+     JWT_SECRET=your_super_secret_key_here_1
+     JWT_REFRESH_SECRET=your_refresh_secret_here_1
      JWT_EXPIRES_IN=15m
      JWT_REFRESH_EXPIRES_IN=7d
      COOKIE_SECURE=true
