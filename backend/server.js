@@ -13,7 +13,6 @@ import { errorHandler, notFound } from './src/middleware/errorHandler.js';
 import { initSocket } from './src/utils/socket.js';
 
 // Routes
-import authRoutes from './src/routes/auth.routes.js';
 import doctorRoutes from './src/routes/doctor.routes.js';
 import patientRoutes from './src/routes/patient.routes.js';
 import roomRoutes from './src/routes/room.routes.js';
@@ -70,7 +69,6 @@ app.use('/api', limiter);
 app.get('/health', (req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
 
 // API routes
-app.use('/api/auth', authRoutes);
 app.use('/api/doctors', doctorRoutes);
 app.use('/api/patients', patientRoutes);
 app.use('/api/rooms', roomRoutes);

@@ -1,29 +1,24 @@
 import { Router } from 'express';
 import { body, param } from 'express-validator';
 import { listDoctors, createDoctor, updateDoctor, deleteDoctor, getDoctorCount } from '../controllers/doctor.controller.js';
-import { protect, authorize } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 
 const router = Router();
 
-router.get('/', protect, listDoctors);
-router.get('/count', protect, getDoctorCount);
+router.get('/', listDoctors);
+router.get('/count', getDoctorCount);
 router.post(
   '/',
-  protect,
-  authorize('Admin'),
   [body('name').notEmpty(), body('specialty').notEmpty()],
   validate,
   createDoctor
 );
 router.put(
   '/:id',
-  protect,
-  authorize('Admin'),
   [param('id').isMongoId()],
   validate,
   updateDoctor
 );
-router.delete('/:id', protect, authorize('Admin'), [param('id').isMongoId()], validate, deleteDoctor);
+router.delete('/:id', [param('id').isMongoId()], validate, deleteDoctor);
 
 export default router;
