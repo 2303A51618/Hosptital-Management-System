@@ -57,6 +57,16 @@ app.use('/api', limiter);
 // Health
 app.get('/health', (req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
 
+// Friendly root route: redirect to frontend if configured, otherwise return a simple API info JSON.
+app.get('/', (req, res) => {
+  try {
+    if (env.CLIENT_ORIGIN) return res.redirect(env.CLIENT_ORIGIN);
+    return res.json({ status: 'ok', api: true, message: 'Hospital Management API. See /health for details.' });
+  } catch (err) {
+    return res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // API routes
 app.use('/api/doctors', doctorRoutes);
 app.use('/api/patients', patientRoutes);
