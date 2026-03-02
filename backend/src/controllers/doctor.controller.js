@@ -11,12 +11,16 @@ import { deleteFromCloudinary } from '../utils/cloudinary.js';
 
 export const listDoctors = async (req, res, next) => {
   try {
-    const { specialty, q } = req.query;
+    const { specialty, q, page = 1, limit = 20 } = req.query;
     const filter = {};
     if (specialty) filter.specialty = specialty;
     if (q) filter.name = { $regex: q, $options: 'i' };
-    const docs = await Doctor.find(filter).sort({ createdAt: -1 });
-    res.json(docs);
+    const skip = (Number(page) - 1) * Number(limit);
+    const [docs, total] = await Promise.all([
+      Doctor.find(filter).sort({ createdAt: -1 }).skip(skip).limit(Number(limit)).lean(),
+      Doctor.countDocuments(filter),
+    ]);
+    res.json({ items: docs, total, page: Number(page), pages: Math.ceil(total / Number(limit)) });
   } catch (err) {
     next(err);
   }

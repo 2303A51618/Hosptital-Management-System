@@ -3,13 +3,14 @@ export const getRoomDetails = async (req, res, next) => {
 	try {
 		const { id } = req.params;
 		const room = await Room.findById(id)
-			.populate('currentPatient')
-			.populate('assignmentHistory.patient')
-			.populate('assignmentHistory.doctor')
-			.populate('assignmentHistory.nurse')
-			.populate('notes.staff')
-			.populate('communication.from')
-			.populate('communication.to');
+			.populate('currentPatient', 'name phone admissionStatus')
+			.populate('assignmentHistory.patient', 'name')
+			.populate('assignmentHistory.doctor', 'name specialty')
+			.populate('assignmentHistory.nurse', 'name')
+			.populate('notes.staff', 'name')
+			.populate('communication.from', 'name')
+			.populate('communication.to', 'name')
+			.lean();
 		if (!room) return res.status(404).json({ message: 'Room not found' });
 		res.json(room);
 	} catch (err) {
@@ -84,10 +85,11 @@ export const printRoomReport = async (req, res, next) => {
 	try {
 		const { id } = req.params;
 		const room = await Room.findById(id)
-			.populate('currentPatient')
-			.populate('assignmentHistory.patient')
-			.populate('assignmentHistory.doctor')
-			.populate('assignmentHistory.nurse');
+			.populate('currentPatient', 'name phone email admissionStatus')
+			.populate('assignmentHistory.patient', 'name')
+			.populate('assignmentHistory.doctor', 'name specialty')
+			.populate('assignmentHistory.nurse', 'name')
+			.lean();
 		if (!room) return res.status(404).json({ message: 'Room not found' });
 		res.json(room); // Replace with PDF generation if needed
 	} catch (err) {
@@ -100,8 +102,15 @@ import { getIO } from '../utils/socket.js';
 
 export const listRooms = async (req, res, next) => {
 	try {
-		const rooms = await Room.find().populate('currentPatient');
-		res.json(rooms);
+		const { occupied, page = 1, limit = 20 } = req.query;
+		const filter = {};
+		if (occupied !== undefined) filter.occupied = occupied === 'true';
+		const skip = (Number(page) - 1) * Number(limit);
+		const [rooms, total] = await Promise.all([
+			Room.find(filter).select('number type occupied currentPatient costPerDay').sort({ number: 1 }).skip(skip).limit(Number(limit)).lean(),
+			Room.countDocuments(filter),
+		]);
+		res.json({ items: rooms, total, page: Number(page), pages: Math.ceil(total / Number(limit)) });
 	} catch (err) {
 		next(err);
 	}

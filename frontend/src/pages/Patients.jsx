@@ -35,7 +35,7 @@ export default function Patients() {
     (async () => {
       try {
         const r = await api.get('/doctors');
-        setDoctors(r.data || []);
+        setDoctors(r.data.items || r.data || []);
       } catch {}
     })();
   }, []);

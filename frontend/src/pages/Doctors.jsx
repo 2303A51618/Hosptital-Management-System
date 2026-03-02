@@ -17,8 +17,9 @@ export default function Doctors() {
 
   useEffect(() => { 
     api.get('/doctors').then((r) => {
-      setList(r.data);
-      setFilteredList(r.data);
+      const data = r.data.items || r.data;
+      setList(data);
+      setFilteredList(data);
     }); 
   }, []);
 
@@ -55,7 +56,11 @@ export default function Doctors() {
     try {
       await api.put(`/doctors/${selected._id}`, form);
       setModalOpen(false);
-      api.get('/doctors').then((r) => setList(r.data));
+      api.get('/doctors').then((r) => {
+        const data = r.data.items || r.data;
+        setList(data);
+        setFilteredList(data);
+      });
     } catch {}
     setLoading(false);
   };
@@ -94,7 +99,11 @@ export default function Doctors() {
       toast({ title: 'Doctor added successfully!', status: 'success', duration: 3000 });
       setAddModalOpen(false);
       setNewDoctor({ name: '', specialty: '', experienceYears: '', fees: '', email: '', phone: '' });
-      api.get('/doctors').then((r) => setList(r.data));
+      api.get('/doctors').then((r) => {
+        const data = r.data.items || r.data;
+        setList(data);
+        setFilteredList(data);
+      });
     } catch {
       toast({ title: 'Failed to add doctor.', status: 'error', duration: 3000 });
     }

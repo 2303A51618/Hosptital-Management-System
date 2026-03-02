@@ -23,8 +23,9 @@ export default function Rooms() {
 
   useEffect(() => {
     api.get('/rooms').then((r) => {
-      setList(r.data);
-      setFilteredList(r.data);
+      const data = r.data.items || r.data;
+      setList(data);
+      setFilteredList(data);
     });
     api.get('/patients').then((r) => setPatients(r.data.items || r.data));
     const socket = io(process.env.REACT_APP_SOCKET_URL, { withCredentials: true, transports: ['websocket'] });
@@ -63,7 +64,11 @@ export default function Rooms() {
     try {
       await api.post(`/rooms/${selected._id}/assign`, { patientId: assignId });
       setModalOpen(false);
-      api.get('/rooms').then((r) => setList(r.data));
+      api.get('/rooms').then((r) => {
+        const data = r.data.items || r.data;
+        setList(data);
+        setFilteredList(data);
+      });
     } catch {}
     setLoading(false);
   };
@@ -73,7 +78,11 @@ export default function Rooms() {
     try {
       await api.post(`/rooms/${selected._id}/release`);
       setModalOpen(false);
-      api.get('/rooms').then((r) => setList(r.data));
+      api.get('/rooms').then((r) => {
+        const data = r.data.items || r.data;
+        setList(data);
+        setFilteredList(data);
+      });
     } catch {}
     setLoading(false);
   };
@@ -90,7 +99,11 @@ export default function Rooms() {
       toast({ title: 'Room added successfully!', status: 'success', duration: 3000 });
       setAddModalOpen(false);
       setNewRoom({ number: '', type: 'AC' });
-      api.get('/rooms').then((r) => setList(r.data));
+      api.get('/rooms').then((r) => {
+        const data = r.data.items || r.data;
+        setList(data);
+        setFilteredList(data);
+      });
     } catch {
       toast({ title: 'Failed to add room.', status: 'error', duration: 3000 });
     }

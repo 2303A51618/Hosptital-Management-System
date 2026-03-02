@@ -25,10 +25,10 @@ const visitorLogSchema = new mongoose.Schema({
 
 const roomSchema = new mongoose.Schema(
   {
-    number: { type: String, required: true, unique: true },
-    type: { type: String, enum: ['AC', 'Non-AC'], required: true },
-    occupied: { type: Boolean, default: false },
-    currentPatient: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient' },
+    number: { type: String, required: true, unique: true, index: true },
+    type: { type: String, enum: ['AC', 'Non-AC'], required: true, index: true },
+    occupied: { type: Boolean, default: false, index: true },
+    currentPatient: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient', index: true },
     assignmentHistory: [assignmentHistorySchema],
     cleaningRequired: { type: Boolean, default: false },
     cleaningLog: [cleaningLogSchema],

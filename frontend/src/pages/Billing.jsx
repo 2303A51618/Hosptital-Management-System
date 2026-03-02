@@ -23,16 +23,17 @@ export default function Billing() {
   const fetchBills = async () => {
     try {
       const r = await api.get('/billing');
-      setList(r.data);
-      setFilteredList(r.data);
+      const data = r.data.items || r.data;
+      setList(data);
+      setFilteredList(data);
     } catch (err) {}
   };
 
   useEffect(() => {
     fetchBills();
     api.get('/patients').then(r => setPatients(r.data.items || r.data));
-    api.get('/doctors').then(r => setDoctors(r.data));
-    api.get('/appointments').then(r => setAppointments(r.data));
+    api.get('/doctors').then(r => setDoctors(r.data.items || r.data));
+    api.get('/appointments').then(r => setAppointments(r.data.items || r.data));
   }, []);
   
   // Filter bills based on search and filters

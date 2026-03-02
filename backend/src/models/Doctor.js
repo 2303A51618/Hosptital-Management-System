@@ -10,7 +10,7 @@ const availabilitySchema = new mongoose.Schema(
 
 const doctorSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true, index: true },
     specialty: {
       type: String,
       enum: ['Cardiologist', 'Neurologist', 'Dermatologist', 'Orthopedic', 'Pediatrician', 'Gynecologist', 'ENT', 'General'],
@@ -19,14 +19,14 @@ const doctorSchema = new mongoose.Schema(
     },
     experienceYears: { type: Number, default: 0 },
     fees: { type: Number, default: 0 },
-    email: { type: String },
-    phone: { type: String },
+    email: { type: String, index: true },
+    phone: { type: String, index: true },
     image: {
       url: String,
       publicId: String,
     },
     availability: [availabilitySchema],
-    isActive: { type: Boolean, default: true },
+    isActive: { type: Boolean, default: true, index: true },
   },
   { timestamps: true }
 );

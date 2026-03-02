@@ -111,9 +111,9 @@ export default function Appointments() {
           api.get('/patients'),
           api.get('/rooms'),
         ]);
-        setDoctors(d.data);
-        setPatients(p.data.items || p.data); // paginated or array
-        setRooms(r.data);
+        setDoctors(d.data.items || d.data);
+        setPatients(p.data.items || p.data);
+        setRooms(r.data.items || r.data);
       } catch {}
     })();
   }, [fetchEvents]);

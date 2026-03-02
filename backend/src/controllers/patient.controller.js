@@ -25,7 +25,7 @@ export const listPatients = async (req, res, next) => {
 		if (gender) filter.gender = gender;
 		const skip = (Number(page) - 1) * Number(limit);
 		const [items, total] = await Promise.all([
-			Patient.find(filter).sort({ createdAt: -1 }).skip(skip).limit(Number(limit)),
+			Patient.find(filter).select('name email phone gender admissionStatus room assignedDoctor bloodGroup').sort({ createdAt: -1 }).skip(skip).limit(Number(limit)).lean(),
 			Patient.countDocuments(filter),
 		]);
 		res.json({ items, total, page: Number(page), pages: Math.ceil(total / Number(limit)) });
@@ -38,8 +38,9 @@ export const getPatientDetails = async (req, res, next) => {
 	try {
 		const { id } = req.params;
 		const p = await Patient.findById(id)
-			.populate('assignedDoctor', 'name specialty')
-			.populate('room', 'number type');
+			.populate('assignedDoctor', 'name specialty fees')
+			.populate('room', 'number type costPerDay')
+			.lean();
 		if (!p) return res.status(404).json({ message: 'Patient not found' });
 		res.json(p);
 	} catch (err) {
